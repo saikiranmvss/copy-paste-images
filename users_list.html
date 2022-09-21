@@ -1,0 +1,113 @@
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" >
+  <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.3/socket.io.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" >       -->
+<!-- MDB -->
+<style>
+    .backg{
+        background: #00d0ffad;position: inherit;top: 0;bottom: 0;width: 100px;opacity: 3.5;
+    }
+</style>
+<!-- <div data="00100srPORTRAIT_00100_BURST20210605090355711_COVER.jpg" class="clicks" style="width: 100px;background-image: url('images/00100srPORTRAIT_00100_BURST20210605090355711_COVER.jpg');padding:0px 0px;background-position: center;background-size: cover;position: relative;">
+    <div class="clickss" style="padding:100px 0px 0px 0px"></div>
+</div>
+<div data="00100srPORTRAIT_00100_BURST20210605090404949_COVER.jpg" class="clicks" style="width: 100px;background-image: url('images/00100srPORTRAIT_00100_BURST20210605090404949_COVER.jpg');padding:0px 0px;background-position: center;background-size: cover;position: relative;">
+    <div class="clickss" style="padding:100px 0px 0px 0px"></div>
+</div> -->
+
+<div id="imagediv"></div>
+<input type="hidden" id="pasted" name="pasted">
+<div id="imagesDiv" data="off" style="border: 2px solid black;padding: 20px;width: 150px;height: 150px;" ></div>
+<div  id="loadimg"></div>
+<script>
+
+$(document).on('click','#imagesDiv',function(){
+    $(this).css('border','2px solid blue');
+    $(this).attr('data','on');
+})
+
+$(document).on('click',function(e){
+var element=e.target;
+if($(element).attr('id')=='imagesDiv'||$(element).closest('div').attr('id')=='imagesDiv' ){
+    console.log(element);
+}else{
+    $('#imagesDiv').attr('data','off');
+    $("#imagesDiv").css('border','2px solid black');
+}
+})
+
+var folder = "images/";
+
+function callPaste(test){
+    console.log(test);    
+    // var image=$('#pasted').val();
+    $('#pasted').val('');
+    $("#imagesDiv").html( "<img style='width:100%;height:100%;' src='"+ folder + test +"'>" );
+}
+
+$('.clicks .clickss').removeClass('backg');
+$(document).on('click','.clicks',function(){
+    $('.clicks .clickss').removeClass('backg');
+    $(this).children().addClass('backg');
+    
+})
+
+let ctrlActive = false;
+let cActive = false;
+let vActive = false;
+
+document.body.addEventListener("keyup", (event) => {
+  if (event.key == "Control") ctrlActive = false;
+  if (event.code == "KeyC") cActive = false;
+  if (event.code == "KeyV") vActive = false;
+});
+
+document.body.addEventListener("keydown", async (event) => {
+  if (event.key == "Control") ctrlActive = true;
+  if (ctrlActive == true && event.code == "KeyC") {
+
+    var imagedata=$('.backg').parent().attr('data');    
+    navigator.clipboard.writeText(imagedata);
+  }
+
+  if (ctrlActive == true && event.code == "KeyV") {
+    if($('#imagesDiv').attr('data')=='on'){                
+        let text = await navigator.clipboard.readText();        
+    callPaste(text); 
+    }else{        
+    }
+  
+  }
+});
+
+// document.body.addEventListener("keydown", (event) => {
+//   if (event.key == "Control") ctrlActive = true;
+//   if (ctrlActive == true && event.code == "KeyC") {
+//     var imagedata=$('.backg').parent().attr('data');    
+//     navigator.clipboard.writeText(imagedata);
+    
+//   }
+
+//     //   if (ctrlActive == true && event.code == "KeyV") {
+//     //     event.preventDefault();
+//     //   }
+// });
+
+$.ajax({
+    url : folder,
+    success: function (data) {
+        $(data).find("a").attr("href", function (i, val) {
+            if( val.match(/\.(jpe?g|png|gif)$/) ) { 
+                $("#loadimg").append( '<div data="'+val+'" class="clicks" style="width: 100px;background-image: url('+folder+val+');padding:0px 0px;background-position: center;background-size: cover;position: relative;"><div class="clickss" style="padding:100px 0px 0px 0px"></div></div>' );
+            } 
+        });
+    }
+});
+
+</script>
